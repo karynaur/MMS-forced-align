@@ -7,7 +7,7 @@ import argparse
 
 
 from text_normalization import text_normalize
-from data_prep.align_utils import (
+from align_utils import (
     get_uroman_tokens,
     time_to_frame,
     load_model_dict,
@@ -183,7 +183,7 @@ if __name__ == "__main__":
         "-o",
         "--outdir",
         type=str,
-        default='./out'
+        default='./out',
         help="Output directory to store segmented audio files",
     )
     print("Using torch version:", torch.__version__)
