@@ -1,24 +1,11 @@
-# Data Preparation 
+# Align audio and text using MMS
 
-We describe the process of aligning long audio files with their transcripts and generating shorter audio segments below. 
-
-- Step 1:  Download and install torchaudio using the nightly version. We have open sourced the CTC forced alignment algorithm described in our paper via [torchaudio](https://github.com/pytorch/audio/pull/3348). 
-  ```
-  pip install --pre torchaudio --index-url https://download.pytorch.org/whl/nightly/cu118
+- Step 1:  Install the requirements. 
+  ```bash
+  bash install.sh
   ```
   
-- Step 2: Download [uroman](https://github.com/isi-nlp/uroman) from Github. It is a universal romanizer which converts text in any script to the Latin alphabet. Use [this link](https://www.isi.edu/~ulf/uroman.html) to try their web interface.  
-  ```
-  git clone git@github.com:isi-nlp/uroman.git
-  ```
-  
-- Step 3: Install a few other dependencies 
-  ```
-  pip install sox 
-  pip install dataclasses 
-  ```  
-
-- Step 4: Create a text file containing the transcript for a (long) audio file. Each line in the text file will correspond to a separate audio segment that will be generated upon alignment.
+- Step 2: Arange your files in the format of your choice. Create a text file containing the transcript for a (long) audio file. Each line in the text file will correspond to a separate audio segment that will be generated upon alignment.
 
   Example content of the input text file :
   ```
@@ -27,10 +14,10 @@ We describe the process of aligning long audio files with their transcripts and 
   Text of the desired third segment
   ```
 
-- Step 5: Run forced alignment and segment the audio file into shorter segments. 
+- Step 3: Run the python command 
   ```
-  python align_and_segment.py --audio /path/to/audio.wav --textfile /path/to/textfile --lang <iso> --outdir /path/to/output --uroman /path/to/uroman/bin 
-  ```
+  python align_and_segment.py -a audio.wav -t text_file.txt -l hin -o out/ 
+  ```  
 
   The above code  will generated the audio segments under output directory based on the content of each line in the input text file. The `manifest.json` file consisting of the of segmented audio filepaths and their corresponding transcripts. 
 
@@ -43,5 +30,3 @@ We describe the process of aligning long audio files with their transcripts and 
   ```
 
   To visualize the segmented audio files, [Speech Data Explorer](https://github.com/NVIDIA/NeMo/tree/main/tools/speech_data_explorer) tool from NeMo toolkit can be used.  
-
-  As our alignment model outputs uroman tokens for input audio in any language, it also works with non-english audio and their corresponding transcripts. 
