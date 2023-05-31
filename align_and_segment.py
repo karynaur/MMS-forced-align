@@ -27,7 +27,7 @@ def generate_emissions(model, audio_file):
 
     audio_sf = sox.file_info.sample_rate(audio_file)
     waveform = F.resample(waveform, orig_freq=audio_sf, new_freq=SAMPLING_FREQ)
-    assert audio_sf == SAMPLING_FREQ
+    # assert audio_sf == SAMPLING_FREQ
 
     emissions_arr = []
     with torch.inference_mode():
