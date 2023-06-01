@@ -16,6 +16,7 @@ from align_utils import (
 )
 import torchaudio.functional as F
 
+UROMAN_PATH = './uroman/bin'
 SAMPLING_FREQ = 16000
 EMISSION_INTERVAL = 30
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -97,22 +98,24 @@ def get_alignments(
     return segments, stride
 
 
-def main(outdir, text_filepath, lang, uroman_path, audio_filepath):
+def main(outdir, text_filepath, lang, audio_filepath):
     print("Using torch version:", torch.__version__)
     print("Using torchaudio version:", torchaudio.__version__)
     print("Using device: ", DEVICE)
-    
+
     assert not os.path.exists(
         outdir
     ), f"Error: Output path exists already {outdir}"
-    print(f"Output will be saved in {outdir}")
+    
+    print(f"Output in {outdir}")
+    
     transcripts = []
     with open(text_filepath) as f:
         transcripts = [line.strip() for line in f]
     print("Read {} lines from {}".format(len(transcripts), text_filepath))
 
     norm_transcripts = [text_normalize(line.strip(), lang) for line in transcripts]
-    tokens = get_uroman_tokens(norm_transcripts, uroman_path, lang)
+    tokens = get_uroman_tokens(norm_transcripts, UROMAN_PATH, lang)
 
     model, dictionary = load_model_dict()
     model = model.to(DEVICE)
@@ -152,4 +155,3 @@ def main(outdir, text_filepath, lang, uroman_path, audio_filepath):
                 "uroman_tokens": tokens[i],
             }
             f.write(json.dumps(sample) + "\n")
-
