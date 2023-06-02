@@ -99,8 +99,6 @@ def get_alignments(
 
 
 def main(outdir, text_filepath, lang, audio_filepath):
-    print("Using torch version:", torch.__version__)
-    print("Using torchaudio version:", torchaudio.__version__)
     print("Using device: ", DEVICE)
 
     assert not os.path.exists(
@@ -131,13 +129,13 @@ def main(outdir, text_filepath, lang, audio_filepath):
     spans = get_spans(tokens, segments)
 
     os.makedirs(outdir)
-    with open( f"{outdir}/manifest.json", "w") as f:
+    with open(f"{outdir}/manifest.json", "w", encoding= 'utf-8') as f:
         for i, t in enumerate(transcripts):
             span = spans[i]
             seg_start_idx = span[0].start
             seg_end_idx = span[-1].end
 
-            output_file = f"{outdir}/segment{i}.flac"
+            output_file = f"{outdir}/segment_{i}.wav"
 
             audio_start_sec = seg_start_idx * stride / 1000
             audio_end_sec = seg_end_idx * stride / 1000 
@@ -154,4 +152,4 @@ def main(outdir, text_filepath, lang, audio_filepath):
                 "normalized_text":norm_transcripts[i],
                 "uroman_tokens": tokens[i],
             }
-            f.write(json.dumps(sample) + "\n")
+            f.write(json.dumps(sample, ensure_ascii= False) + "\n")
